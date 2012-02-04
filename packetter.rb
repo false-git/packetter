@@ -25,7 +25,10 @@ puts 'login...'
 agent.get('https://my.softbank.jp/msb/d/top')
 agent.page.forms.first.field_with(:name => 'msn').value = $my_softbank[:user_id]
 agent.page.forms.first.field_with(:name => 'password').value = $my_softbank[:password]
-agent.page.forms.first.click_button
+agent.page.forms.first.add_field!('doLogin.x', '5')
+agent.page.forms.first.add_field!('doLogin.y', '5')
+#agent.page.forms.first.click_button
+agent.page.forms.first.submit
 
 # jump to mainmenu
 puts 'jump to mainmenu...'
