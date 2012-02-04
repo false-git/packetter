@@ -1,10 +1,10 @@
-#!/usr/bin/ruby -Ku
+#!/usr/local/bin/ruby -Ku
 
 require 'rubygems'
 require 'mechanize'
 require 'nkf'
 require 'open-uri'
-require 'net/http'
+require 'net/https'
 require 'erb'
 
 load File.join(File.dirname(__FILE__), 'config.rb')
@@ -27,9 +27,13 @@ agent.page.forms.first.field_with(:name => 'msn').value = $my_softbank[:user_id]
 agent.page.forms.first.field_with(:name => 'password').value = $my_softbank[:password]
 agent.page.forms.first.click_button
 
-# jumo to mainmenu
+# jump to mainmenu
 puts 'jump to mainmenu...'
 agent.get('https://my.softbank.jp/msb/d/webLink/doSend/WCO010000')
+
+# jump to mainmenu
+puts 'redirect to mainmenu...'
+agent.page.forms.first.submit
 
 # jump to bill_before_fixed
 puts 'jump to bill_before_fixed...'
@@ -81,11 +85,12 @@ f.close
 
 # post
 puts 'post...'
-Net::HTTP.version_1_2
-Net::HTTP.start('twitter.com', 80) do |http|
-  req = Net::HTTP::Post.new('/statuses/update.xml')
-  req.basic_auth $twitter[:user_id], $twitter[:password]
-  req.body = 'status=' + ERB::Util.u("#{date}までのSoftBankパケット通信料 : #{fee}#{diff} http://tinyurl.com/packetter")
+https = Net::HTTP.new('boxcar.io', 443)
+https.use_ssl = true
+https.start() do |http|
+  req = Net::HTTP::Post.new('/notifications')
+  req.basic_auth $boxcar[:user_id], $boxcar[:password]
+  req.body = 'notification[from_screen_name]=packetter&notification[message]=' + ERB::Util.u("#{date}までのSoftBankパケット通信料 : #{fee}#{diff} http://tinyurl.com/packetter")
   res = http.request(req)
 end
 
