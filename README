@@ -4,3 +4,6 @@ http://d.hatena.ne.jp/nacookan/20100526/1274892165
 のpacketter。
 
 ソフトバンクのパケット利用料をtwitterでつぶやくためのスクリプト。
+
+twitterがOAUTHじゃないとtweetできなくなったので、boxcarに飛ばすようにして、
+softbankのwebページの作りの変更に対応したもの。
