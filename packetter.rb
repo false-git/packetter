@@ -44,9 +44,12 @@ agent.get('https://bl11.my.softbank.jp/wco/billBeforeFixed/WCO020')
 
 # get contents
 td = agent.page.search('form[@name="billBeforeFixedActionForm"]').inner_text.gsub(/[\r\n]/, '')
+#f = File.open('packetter.log', 'w')
+#f.puts agent.page.body
+#f.close
 
 # date
-td =~ /年([0-9]+月[0-9]+日)）/
+td =~ /([0-9]+月[0-9]+日)ご利用分）/
 date = $1
 puts "date : #{date}"
 
