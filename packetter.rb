@@ -1,4 +1,5 @@
 #!/usr/local/bin/ruby -Ku
+# -*- coding: utf-8 -*-
 
 require 'rubygems'
 require 'mechanize'
@@ -23,7 +24,7 @@ agent.user_agent = 'Mozilla/5.0 (iPhone; U; CPU iPhone OS 2_0 like Mac OS X; ja-
 # login
 puts 'login...'
 agent.get('https://my.softbank.jp/msb/d/top')
-agent.page.forms.first.field_with(:name => 'msn').value = $my_softbank[:user_id]
+agent.page.forms.first.field_with(:name => 'telnum').value = $my_softbank[:user_id]
 agent.page.forms.first.field_with(:name => 'password').value = $my_softbank[:password]
 agent.page.forms.first.add_field!('doLogin.x', '5')
 agent.page.forms.first.add_field!('doLogin.y', '5')
@@ -43,22 +44,23 @@ puts 'jump to bill_before_fixed...'
 agent.get('https://bl11.my.softbank.jp/wco/billBeforeFixed/WCO020')
 
 # get contents
-td = agent.page.search('form[@name="billBeforeFixedActionForm"]').inner_text.gsub(/[\r\n]/, '')
+td = agent.page.search('div[@id="contents"]').inner_text.gsub(/[\r\n]/, '')
 #f = File.open('packetter.log', 'w')
 #f.puts agent.page.body
 #f.close
-
 # date
-td =~ /([0-9]+月[0-9]+日)ご利用分）/
+td =~ /([0-9]+\/[0-9]+)ご利用分）/
 date = $1
 puts "date : #{date}"
 
 # packet fee
-list = td.scan(/通信料.+?([0-9,]+)円/)
-fee = 0
-list.each do |item|
-  fee += item[0].gsub(/,/, '').to_i
-end
+#list = td.scan(/通信料.+?([0-9,]+)円/)
+#fee = 0
+#list.each do |item|
+#  fee += item[0].gsub(/,/, '').to_i
+#end
+td =~ /対象通信分.+?([0-9,]+) ?円/
+fee = $1
 fee = "#{fee.to_s.gsub(/(.*\d)(\d\d\d)/, '\1,\2')}円"
 puts "packet fee : #{fee}"
 
