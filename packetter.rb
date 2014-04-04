@@ -93,12 +93,11 @@ f.close
 
 # post
 puts 'post...'
-https = Net::HTTP.new('boxcar.io', 443)
+https = Net::HTTP.new('new.boxcar.io', 443)
 https.use_ssl = true
 https.start() do |http|
-  req = Net::HTTP::Post.new('/notifications')
-  req.basic_auth $boxcar[:user_id], $boxcar[:password]
-  req.body = 'notification[from_screen_name]=packetter&notification[message]=' + ERB::Util.u("#{date}までのSoftBankパケット通信料 : #{fee}#{diff} http://tinyurl.com/packetter")
+  req = Net::HTTP::Post.new('/api/notifications')
+  req.body = 'user_credentials=' + $boxcar2[:token] + '&notification[title]=packetter&notification[long_message]=' + ERB::Util.u("#{date}までのSoftBankパケット通信料 : #{fee}#{diff} http://tinyurl.com/packetter")
   res = http.request(req)
 end
 
